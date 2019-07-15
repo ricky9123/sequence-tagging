@@ -29,8 +29,7 @@ class DataGrandReader(DatasetReader):
                     elif len(seq) == 1:
                         words, label = seq[0], None
                     else:
-                        print(seq)
-                        raise RuntimeError(f'Unknown Error in Dataset {file_path}')
+                        raise RuntimeError(f'Unknown Error in Dataset {file_path} at {seq}')
 
                     words = words.split('_')
                     instance_words.extend(words)

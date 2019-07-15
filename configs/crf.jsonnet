@@ -12,18 +12,21 @@
             "token_embedders": {
                 "tokens": {
                     "type": "embedding",
-                    "embedding_dim": 200
+                    "embedding_dim": 300
                 }
             }
         },
         "encoder": {
             "type": "stacked_bidirectional_lstm",
-            "input_size": 200,
-            "hidden_size": 200,
-            "num_layers": 1
+            "input_size": 300,
+            "hidden_size": 300,
+            "num_layers": 2,
+            "recurrent_dropout_probability": 0.5,
+            "layer_dropout_probability": 0.5
         },
         "calculate_span_f1": true,
-        "label_encoding": "BIO"
+        "label_encoding": "BIO",
+        "dropout": 0.5
     },
     "iterator": {
         "type": "bucket",
@@ -37,12 +40,13 @@
     },
     "trainer": {
         "optimizer": {
-            "type": "adam"
+            "type": "adam",
+            "weight_decay": 0.0005
         },
         "validation_metric": "+f1-measure-overall",
-        "num_epochs": 100,
-        "patience": 10,
-        "cuda_device": -1,
-        "num_serialized_models_to_keep": 0
+        "num_epochs": 30,
+        "patience": 5,
+        "num_serialized_models_to_keep": 5,
+        "cuda_device": -1
     }
 }

@@ -26,7 +26,7 @@ local max_pieces = 128;
                 "bert": {
                     "type": "common-bert-pretrained",
                     "pretrained_model": bert,
-                    "requires_grad": true,
+                    "requires_grad": false,
                     "top_layer_only": true,
                     "max_pieces": max_pieces
                 }
@@ -40,7 +40,7 @@ local max_pieces = 128;
             "type": "stacked_bidirectional_lstm",
             "input_size": bert_size,
             "hidden_size": 300,
-            "num_layers": 1,
+            "num_layers": 2,
             "recurrent_dropout_probability": 0.5,
             "layer_dropout_probability": 0.5
         },
@@ -60,8 +60,13 @@ local max_pieces = 128;
     },
     "trainer": {
         "optimizer": {
-            "type": "bert_adam",
-            "lr": 0.00005
+            "type": "adam",
+            "weight_decay": 0.00005
+        },
+        "learning_rate_scheduler": {
+            "type": "step",
+            "step_size": 1,
+            "gamma": 0.95
         },
         "validation_metric": "+f1-measure-overall",
         "num_epochs": 50,

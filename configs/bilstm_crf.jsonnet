@@ -41,10 +41,15 @@
     "trainer": {
         "optimizer": {
             "type": "adam",
-            "weight_decay": 0.0005
+            "weight_decay": 0.00005
+        },
+        "learning_rate_scheduler": {
+            "type": "step",
+            "step_size": 1,
+            "gamma": 0.95
         },
         "validation_metric": "+f1-measure-overall",
-        "num_epochs": 30,
+        "num_epochs": 50,
         "patience": 5,
         "num_serialized_models_to_keep": 5,
         "cuda_device": -1

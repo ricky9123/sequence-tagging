@@ -5,12 +5,12 @@
 Train:
 
 ```bash
-allennlp train configs/baseline.jsonnet -s outputs/baseline -f --include-package hanzo
+allennlp train configs/bilstm_crf.jsonnet -s outputs/bilstm_crf -f --include-package hanzo
 ```
 
 Predict:
 ```bash
-allennlp predict outputs/baseline/model.tar.gz resources/datagrand/test.txt \
+allennlp predict outputs/bilstm_crf/model.tar.gz resources/datagrand/test.txt \
                  --include-package hanzo \
                  --predictor data_grand \
                  --use-dataset-reader \

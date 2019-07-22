@@ -26,7 +26,7 @@ local max_pieces = 128;
                 "bert": {
                     "type": "common-bert-pretrained",
                     "pretrained_model": bert,
-                    "requires_grad": false,
+                    "requires_grad": true,
                     "top_layer_only": true,
                     "max_pieces": max_pieces
                 }
@@ -56,22 +56,22 @@ local max_pieces = 128;
                 "num_tokens"
             ]
         ],
-        "batch_size": 32
+        "batch_size": 8
     },
     "trainer": {
         "optimizer": {
             "type": "adam",
-            "weight_decay": 0.00005
-        },
-        "learning_rate_scheduler": {
-            "type": "step",
-            "step_size": 1,
-            "gamma": 0.95
+            "parameter_groups": [
+                [[".*bert.*"], {"lr": 5e-5}],
+                [["^((?!bert).)*$"], {}]
+            ],
+            "betas": [0.9, 0.999],
+            "lr": 1e-3
         },
         "validation_metric": "+f1-measure-overall",
-        "num_epochs": 50,
+        "num_epochs": 100,
         "patience": 5,
-        "num_serialized_models_to_keep": 0,
+        "num_serialized_models_to_keep": 5,
         "cuda_device": -1
     }
 }

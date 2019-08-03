@@ -2,11 +2,17 @@ local bert = "/path/to/bert";
 local bert_size = 768;
 local max_pieces = 128;
 
+local glove = "/path/to/glove";
+local token_size = 300;
+
 
 {
     "dataset_reader": {
         "type": "data_grand",
         "token_indexers": {
+            "tokens": {
+                "type": "single_id"
+            },
             "bert": {
                 "type": "bert-pretrained",
                 "pretrained_model": bert,
@@ -23,24 +29,31 @@ local max_pieces = 128;
         "text_field_embedder": {
             "type": "basic",
             "token_embedders": {
+                "tokens": {
+                    "type": "embedding",
+                    "embedding_dim": token_size,
+                    "pretrained_file": glove,
+                    "trainable": true
+                },
                 "bert": {
                     "type": "common-bert-pretrained",
                     "pretrained_model": bert,
-                    "requires_grad": true,
+                    "requires_grad": false,
                     "top_layer_only": true,
                     "max_pieces": max_pieces
                 }
             },
             "allow_unmatched_keys": true,
             "embedder_to_indexer_map": {
-                "bert": ["bert", "bert-offsets"]
+                "bert": ["bert", "bert-offsets"],
+                "tokens": ["tokens"]
             },
         },
         "encoder": {
             "type": "stacked_bidirectional_lstm",
-            "input_size": bert_size,
+            "input_size": bert_size + token_size,
             "hidden_size": 300,
-            "num_layers": 2,
+            "num_layers": 3,
             "recurrent_dropout_probability": 0.5,
             "layer_dropout_probability": 0.5
         },
@@ -56,22 +69,22 @@ local max_pieces = 128;
                 "num_tokens"
             ]
         ],
-        "batch_size": 8
+        "batch_size": 32
     },
     "trainer": {
         "optimizer": {
             "type": "adam",
-            "parameter_groups": [
-                [[".*bert.*"], {"lr": 5e-5}],
-                [["^((?!bert).)*$"], {}]
-            ],
-            "betas": [0.9, 0.999],
-            "lr": 1e-3
+            "weight_decay": 0.00005
+        },
+        "learning_rate_scheduler": {
+            "type": "step",
+            "step_size": 1,
+            "gamma": 0.95
         },
         "validation_metric": "+f1-measure-overall",
         "num_epochs": 100,
-        "patience": 5,
-        "num_serialized_models_to_keep": 5,
+        "patience": 10,
+        "num_serialized_models_to_keep": 0,
         "cuda_device": -1
     }
 }

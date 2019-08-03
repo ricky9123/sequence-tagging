@@ -15,7 +15,11 @@ class DataGrandPredictor(Predictor):
         outputs = self._model.forward_on_instance(instance)
 
         tokens = [str(token) for token in instance.fields['tokens']]
-        spans = bio_tags_to_spans(outputs['tags'])
+
+        if 'spans' in outputs:
+            spans = outputs['spans']
+        else:
+            spans = bio_tags_to_spans(outputs['tags'])
         spans.sort(key=lambda t: t[1][0])
 
         o_start = 0

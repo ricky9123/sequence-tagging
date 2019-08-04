@@ -4,6 +4,11 @@
 
 The introduction to dataset: [README.md](./resources/datagrand).
 
+## Pre-trained Word Embedding & Language Model
+
+ - Convert your BERT from tensorflow to pytorch: `scripts/bert_convert.sh`.
+ - Train your GloVe using [stanfordnlp/GloVe](https://github.com/stanfordnlp/GloVe): `scripts/glove_train.sh`.
+
 ## Run
 
 Train:
